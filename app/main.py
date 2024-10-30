@@ -1,9 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from dependencies.api_key import API_KEY
 import httpx
+from datetime import date
 app = FastAPI()
 
-url = f"https://api.nasa.gov/neo/rest/v1/feed?api_key={API_KEY}"
+start_date = f"{date.today():%Y-%m-%d}"
+url = f"https://api.nasa.gov/neo/rest/v1/feed?start_date={start_date}&end_date={start_date}&api_key={API_KEY}"
 
 @app.get("/asteroids")
 async def get_asteroids():
