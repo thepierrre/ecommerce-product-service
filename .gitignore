@@ -3,3 +3,4 @@
 app/__pycache__/
 app/dependencies/api_key.py
 app/dependencies/__pycache__
+notes.txt
