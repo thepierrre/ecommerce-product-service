@@ -1,6 +1,8 @@
 .idea/
-./asteroids_env/
-app/__pycache__/
+./venv/
 app/dependencies/api_key.py
-app/dependencies/__pycache__
+**/__pycache__
 notes.txt
+app/service/__pycache__
+app/router/v1/product/__pycache__
+app/router/v1/__pycache__
