@@ -1,0 +1,6 @@
+wheel
+fastapi
+sqlmodel
+uvicorn
+redis
+pymysql

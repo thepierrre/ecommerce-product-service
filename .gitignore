@@ -1,6 +1,5 @@
 .idea/
 ./venv/
-app/dependencies/api_key.py
 **/__pycache__
 notes.txt
 app/service/__pycache__
