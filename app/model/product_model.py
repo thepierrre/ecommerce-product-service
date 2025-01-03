@@ -1,19 +1,20 @@
 from __future__ import annotations
 
+import datetime
 from uuid import UUID, uuid4
 
 from app.config.database import Base
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, DateTime
+from sqlalchemy import String
 
 
 class Product(Base):
     __tablename__ = 'products'
 
     id: Mapped[UUID] = mapped_column(primary_key=True, index=True)
-    created_at = Mapped[DateTime]
-    updated_at = Mapped[DateTime]
+    created_at: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.now(datetime.UTC))
+    updated_at: Mapped[datetime.datetime] = mapped_column(nullable=True)
     name: Mapped[str] = mapped_column(String(100), index=True)
     description: Mapped[str | None] = mapped_column(String(1000), nullable=True)
     price: Mapped[float]
