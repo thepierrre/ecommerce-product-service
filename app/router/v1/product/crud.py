@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status
 from app.service.product_service import ProductService
 from app.model.product_model import ProductCreate
+from app.config.database import db_dependency
 
 router = APIRouter()
 service = ProductService()
@@ -14,8 +15,8 @@ async def fetch_product_by_id(product_id: str):
     return await service.find_product_by_id(product_id)
 
 @product_router.post("", status_code=status.HTTP_201_CREATED)
-async def create_product(product: ProductCreate):
-    return await service.create_product(product)
+async def create_product(product: ProductCreate, db: db_dependency):
+    return await service.create_product(product, db)
 
 # generate uuid
 # build a url string with the location of the resource using the id

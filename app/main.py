@@ -1,16 +1,16 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
+from app.config.database import init_db
 from router.v1.product import crud as product_crud
-from app.config.database import SessionLocal
 
-app = FastAPI()
+@asynccontextmanager
+async def on_startup(app: FastAPI):
+    init_db()
+    yield
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+app = FastAPI(lifespan=on_startup)
 
 @app.get("/")
 def root():
