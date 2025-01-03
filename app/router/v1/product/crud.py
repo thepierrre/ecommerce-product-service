@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
-from service.product_service import ProductService
-from model.product_model import ProductCreate
+from app.service.product_service import ProductService
+from app.model.product_model import ProductCreate
 
 router = APIRouter()
 service = ProductService()
@@ -10,7 +10,7 @@ product_router = APIRouter(
 )
 
 @product_router.get("/{product_id}")
-async def get_product_by_id(product_id: str):
+async def fetch_product_by_id(product_id: str):
     return await service.find_product_by_id(product_id)
 
 @product_router.post("", status_code=status.HTTP_201_CREATED)

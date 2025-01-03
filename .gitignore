@@ -5,3 +5,4 @@ notes.txt
 app/service/__pycache__
 app/router/v1/product/__pycache__
 app/router/v1/__pycache__
+app/config/env.py
