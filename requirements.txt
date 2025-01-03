@@ -4,3 +4,4 @@ sqlmodel
 uvicorn
 redis
 pymysql
+cryptography
