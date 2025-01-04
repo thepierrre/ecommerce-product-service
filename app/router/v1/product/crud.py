@@ -11,9 +11,13 @@ product_router = APIRouter(
 )
 
 @product_router.get("/{product_id}")
-async def fetch_product_by_id(product_id: str, db: db_dependency):
-    return await service.find_product_by_id(product_id, db)
+def fetch_product_by_id(product_id: str, db: db_dependency):
+    return service.find_product_by_id(product_id, db)
 
 @product_router.post("", status_code=status.HTTP_201_CREATED)
-async def create_product(product: ProductCreate, db: db_dependency):
-    return await service.create_product(product, db)
+def create_product(product: ProductCreate, db: db_dependency):
+    return service.create_product(product, db)
+
+@product_router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_product(product_id: str, db: db_dependency):
+    return service.remove_product(product_id, db)
