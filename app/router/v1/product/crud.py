@@ -11,13 +11,9 @@ product_router = APIRouter(
 )
 
 @product_router.get("/{product_id}")
-async def fetch_product_by_id(product_id: str):
-    return await service.find_product_by_id(product_id)
+async def fetch_product_by_id(product_id: str, db: db_dependency):
+    return await service.find_product_by_id(product_id, db)
 
 @product_router.post("", status_code=status.HTTP_201_CREATED)
 async def create_product(product: ProductCreate, db: db_dependency):
     return await service.create_product(product, db)
-
-# generate uuid
-# build a url string with the location of the resource using the id
-# only return 201 and location header to the client
