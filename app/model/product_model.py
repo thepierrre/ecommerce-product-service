@@ -2,6 +2,7 @@ import datetime
 from uuid import UUID, uuid4
 from sqlmodel import SQLModel, Field
 from sqlalchemy import Column, DateTime, func
+from pydantic import confloat, constr
 
 
 class Product(SQLModel, table=True):
@@ -14,22 +15,31 @@ class Product(SQLModel, table=True):
             DateTime(timezone=True), onupdate=func.now(), nullable=True
         )
     )
-    name: str = Field(index=True)
-    description: str | None = Field(default=None)
+    name: str = Field(index=True, min_length=2, max_length=50)
+    description: str | None = Field(default=None, min_length=2, max_length=200)
     price: float
     discount_price: float | None = Field(default=None)
-    currency: str = Field(default='EUR')
+    currency: str = Field(default='EUR', min_length=3, max_length=3)
     rating: float | None = Field(default=None)
-    category: str
+    category: str = Field(index=True, min_length=2, max_length=30)
 
 class ProductCreate(SQLModel):
-    name: str
-    description: str | None = None
-    price: float
-    discount_price: float | None = None
-    currency: str = "EUR"
-    rating: float | None = None
-    category: str
+    name: constr(min_length=2, max_length=50)
+    description: constr(min_length=2, max_length=200) | None = None
+    price: confloat(ge=0.01)
+    discount_price: confloat(ge=0.01) | None = None
+    currency: constr(min_length=3, max_length=3) = "EUR"
+    rating: confloat(ge=0, le=5) | None = None
+    category: constr(min_length=2, max_length=30)
+
+class ProductEdit(SQLModel):
+    name: constr(min_length=2, max_length=50) | None = None
+    description: constr(min_length=2, max_length=200) | None = None
+    price: confloat(ge=0.01) | None = None
+    discount_price: confloat(ge=0.01) | None = None
+    currency: constr(min_length=3, max_length=3) | None = None
+    rating: confloat(ge=0, le=5) | None = None
+    category: constr(min_length=2, max_length=30) | None = None
 
 class ProductRead(SQLModel):
     id: UUID

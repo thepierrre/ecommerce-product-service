@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from uuid import UUID
 
-from app.model.product_model import Product, ProductCreate, ProductRead
+from app.model.product_model import Product, ProductCreate, ProductRead, ProductEdit
 from sqlalchemy.orm import Session
 
 class ProductService:
@@ -23,7 +23,7 @@ class ProductService:
         return db_product
 
     @staticmethod
-    def update_product(product_id: str, product: ProductCreate, session: Session) -> Product:
+    def update_product(product_id: str, product: ProductEdit, session: Session) -> Product:
         uuid = UUID(product_id)
         product_db = session.get(Product, uuid)
         if product_db is None:

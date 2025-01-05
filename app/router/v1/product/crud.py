@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 from app.service.product_service import ProductService
-from app.model.product_model import ProductCreate, ProductRead
+from app.model.product_model import ProductCreate, ProductRead, ProductEdit
 from app.config.database import db_dependency
 
 router = APIRouter()
@@ -19,7 +19,7 @@ def create_product(product: ProductCreate, db: db_dependency):
     return service.create_product(product, db)
 
 @product_router.patch("/{product_id}", response_model=ProductRead)
-def edit_product(product_id: str, product: ProductCreate, db: db_dependency):
+def edit_product(product_id: str, product: ProductEdit, db: db_dependency):
     return service.update_product(product_id, product, db)
 
 @product_router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
