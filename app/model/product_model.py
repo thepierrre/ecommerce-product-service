@@ -1,34 +1,44 @@
-from __future__ import annotations
-
 import datetime
 from uuid import UUID, uuid4
-
-from app.config.database import Base
-from pydantic import BaseModel, Field
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String
+from sqlmodel import SQLModel, Field
+from sqlalchemy import Column, DateTime, func
 
 
-class Product(Base):
+class Product(SQLModel, table=True):
     __tablename__ = 'products'
 
-    id: Mapped[UUID] = mapped_column(primary_key=True, index=True)
-    created_at: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.now(datetime.UTC))
-    updated_at: Mapped[datetime.datetime] = mapped_column(nullable=True)
-    name: Mapped[str] = mapped_column(String(100), index=True)
-    description: Mapped[str | None] = mapped_column(String(1000), nullable=True)
-    price: Mapped[float]
-    discount_price: Mapped[float | None] = mapped_column(nullable=True)
-    currency: Mapped[str] = mapped_column(String(3), default="EUR")
-    rating: Mapped[float | None] = mapped_column(nullable=True)
-    category: Mapped[str] = mapped_column(String(100))
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    created_at: datetime.datetime = Field(default=func.now())
+    updated_at: datetime.datetime | None = Field(
+        sa_column=Column(
+            DateTime(timezone=True), onupdate=func.now(), nullable=True
+        )
+    )
+    name: str = Field(index=True)
+    description: str | None = Field(default=None)
+    price: float
+    discount_price: float | None = Field(default=None)
+    currency: str = Field(default='EUR')
+    rating: float | None = Field(default=None)
+    category: str
 
-class ProductCreate(BaseModel):
-    id: UUID = Field(default_factory=uuid4, unique=True)
+class ProductCreate(SQLModel):
     name: str
     description: str | None = None
     price: float
     discount_price: float | None = None
     currency: str = "EUR"
     rating: float | None = None
+    category: str
+
+class ProductRead(SQLModel):
+    id: UUID
+    created_at: datetime.datetime
+    updated_at: datetime.datetime | None
+    name: str
+    description: str | None
+    price: float
+    discount_price: float | None
+    currency: str = "EUR"
+    rating: float | None
     category: str

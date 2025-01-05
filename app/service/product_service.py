@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from uuid import UUID
 
-from app.model.product_model import Product, ProductCreate
+from app.model.product_model import Product, ProductCreate, ProductRead
 from sqlalchemy.orm import Session
 
 class ProductService:
@@ -15,7 +15,7 @@ class ProductService:
         return product
 
     @staticmethod
-    def create_product(product: ProductCreate, session: Session):
+    def create_product(product: ProductCreate, session: Session) -> Product:
         db_product = Product(**product.model_dump())
         session.add(db_product)
         session.commit()
@@ -23,10 +23,24 @@ class ProductService:
         return db_product
 
     @staticmethod
+    def update_product(product_id: str, product: ProductCreate, session: Session) -> Product:
+        uuid = UUID(product_id)
+        product_db = session.get(Product, uuid)
+        if product_db is None:
+            raise HTTPException(status_code=404, detail=f'Product with the id {product_id} not found.')
+
+        product_data = product.model_dump(exclude_unset=True)
+        product_db.sqlmodel_update(product_data)
+        session.add(product_db)
+        session.commit()
+        session.refresh(product_db)
+        return product_db
+
+    @staticmethod
     def remove_product(product_id: str, session: Session):
         uuid = UUID(product_id)
         product = session.get(Product, uuid)
-        if not product:
+        if product is None:
             raise HTTPException(status_code=404, detail=f'Product with the id {product_id} not found.')
         session.delete(product)
         session.commit()

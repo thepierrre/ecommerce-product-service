@@ -1,25 +1,15 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlmodel import SQLModel, create_engine, Session
 from app.config.env import DATABASE_URL
-from sqlalchemy.orm import Session
 from typing import Annotated
 from fastapi import Depends
 
-engine = create_engine(DATABASE_URL)
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base = declarative_base()
+engine = create_engine(DATABASE_URL, echo=True)
 
 def init_db():
-    Base.metadata.create_all(bind=engine)
+    SQLModel.metadata.create_all(bind=engine)
 
 def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    with Session(engine) as session:
+        yield session
 
 db_dependency = Annotated[Session, Depends(get_db)]
